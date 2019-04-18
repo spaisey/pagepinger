@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -32,8 +33,10 @@ public class PageAgent implements Runnable {
         this.restTemplate = restTemplate;
         this.externalIp = externalIp;
         this.configUrl = fromHttpUrl(configUrl).path(tenant).build().toUri();
+        LOG.info("Created PageAgent");
     }
 
+    @PostConstruct
     public void submitRun() {
         executor.execute(this);
     }
@@ -55,10 +58,11 @@ public class PageAgent implements Runnable {
 
         GlastoConfig config = retrieveGlastoConfig();
         if (config == null) {
+            LOG.info("No config available as yet");
             return;
         }
 
-        if ("notset".equals(config.getUrl())) {
+        if ("notset".equals(config.getUrl()) || config.getUrl() == null || config.getUrl().trim().length() == 0) {
             LOG.info("URL not set yet...");
             return;
         } else {
@@ -99,6 +103,7 @@ public class PageAgent implements Runnable {
     }
 
     private boolean search(WebDriver driver, String text) {
+        LOG.info("Loading WebDriver");
         try {
             return driver.getPageSource().toLowerCase().contains(text);
         } catch (Exception e) {
@@ -116,6 +121,7 @@ public class PageAgent implements Runnable {
     }
 
     private GlastoConfig retrieveGlastoConfig() {
+        LOG.info("Attempting to retrieve config from {}", configUrl + "/config");
         try {
             return restTemplate.getForEntity(configUrl + "/config", GlastoConfig.class).getBody();
         } catch (Exception e) {
