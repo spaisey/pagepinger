@@ -1,4 +1,4 @@
-package uk.co.itello.glastonpinger;
+package uk.co.itello.pinger;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,10 +9,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 @SpringBootApplication
-public class GlastonPingerApplication {
+public class PingerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GlastonPingerApplication.class, args);
+		SpringApplication.run(PingerApplication.class, args);
 	}
 
 	@Bean

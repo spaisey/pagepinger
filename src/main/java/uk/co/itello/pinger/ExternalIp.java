@@ -1,4 +1,4 @@
-package uk.co.itello.glastonpinger;
+package uk.co.itello.pinger;
 
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;

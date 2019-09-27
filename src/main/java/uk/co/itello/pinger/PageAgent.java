@@ -1,4 +1,4 @@
-package uk.co.itello.glastonpinger;
+package uk.co.itello.pinger;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -56,7 +56,7 @@ public class PageAgent implements Runnable {
     private void doRun() {
         LOG.info("Starting PageAgent run");
 
-        GlastoConfig config = retrieveGlastoConfig();
+        Config config = retrieveGlastoConfig();
         if (config == null) {
             LOG.info("No config available as yet");
             return;
@@ -120,10 +120,10 @@ public class PageAgent implements Runnable {
         }
     }
 
-    private GlastoConfig retrieveGlastoConfig() {
+    private Config retrieveGlastoConfig() {
         LOG.info("Attempting to retrieve config from {}", configUrl + "/config");
         try {
-            return restTemplate.getForEntity(configUrl + "/config", GlastoConfig.class).getBody();
+            return restTemplate.getForEntity(configUrl + "/config", Config.class).getBody();
         } catch (Exception e) {
             LOG.error("Failed to retrieve config: {}", e.getMessage());
         }

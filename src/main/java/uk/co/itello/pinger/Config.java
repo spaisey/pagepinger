@@ -1,16 +1,16 @@
-package uk.co.itello.glastonpinger;
+package uk.co.itello.pinger;
 
 import java.util.List;
 
-public class GlastoConfig {
+public class Config {
     private String url;
     private List<String> searchCriteria;
     private int retryDelay;
 
-    public GlastoConfig() {
+    public Config() {
     }
 
-    public GlastoConfig(String url, List<String> searchCriteria, int retryDelay) {
+    public Config(String url, List<String> searchCriteria, int retryDelay) {
         this.url = url;
         this.searchCriteria = searchCriteria;
         this.retryDelay = retryDelay;
@@ -42,7 +42,7 @@ public class GlastoConfig {
 
     @Override
     public String toString() {
-        return "GlastoConfig{" +
+        return "Config{" +
                 "url='" + url + '\'' +
                 ", searchCriteria=" + searchCriteria +
                 ", retryDelay=" + retryDelay +
