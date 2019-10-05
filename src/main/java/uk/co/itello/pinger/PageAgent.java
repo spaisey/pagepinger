@@ -1,9 +1,11 @@
 package uk.co.itello.pinger;
 
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,15 +25,18 @@ public class PageAgent implements Runnable {
     private final Executor executor;
     private final RestTemplate restTemplate;
     private final URI configUrl;
+    private final String proxyUrl;
     private final ExternalIp externalIp;
     private int loadCount;
 
     public PageAgent(Executor executor, RestTemplate restTemplate, ExternalIp externalIp,
                      @Value("${config.url}") String configUrl,
+                     @Value("${proxy.url:}") String proxyUrl,
                      @Value("${tenant}") String tenant) {
         this.executor = executor;
         this.restTemplate = restTemplate;
         this.externalIp = externalIp;
+        this.proxyUrl = proxyUrl;
         this.configUrl = fromHttpUrl(configUrl).path(tenant).build().toUri();
         LOG.info("Created PageAgent");
     }
@@ -94,7 +99,17 @@ public class PageAgent implements Runnable {
     }
 
     private WebDriver createDriver() {
-        ChromeDriver driver = new ChromeDriver();
+
+		ChromeOptions chromeOptions = new ChromeOptions();
+
+		if (proxyUrl != null) {
+			Proxy proxy = new Proxy();
+			proxy.setProxyType(Proxy.ProxyType.PAC);
+			proxy.setProxyAutoconfigUrl(proxyUrl);
+			chromeOptions = chromeOptions.setProxy(proxy);
+		}
+
+		ChromeDriver driver = new ChromeDriver(chromeOptions);
         driver.manage().window().setSize(new Dimension(1024,768));
         driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.MINUTES);
         driver.manage().timeouts().setScriptTimeout(2, TimeUnit.MINUTES);
